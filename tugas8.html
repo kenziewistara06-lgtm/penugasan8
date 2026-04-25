@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Gajah Belajar | Dashboard Admin Lengkap</title>
+  <!-- Bootstrap 5 + Icons + Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #fef6fa; }
+    :root { --soft-magenta: #d16ba5; --light-magenta: #f3e0ed; --magenta-hover: #c15492; }
+    .navbar, .bg-soft-magenta { background-color: white !important; box-shadow: 0 2px 12px rgba(209, 107, 165, 0.08); }
+    .navbar-brand { font-weight: 700; color: #d16ba5; }
+    .sidebar { background-color: #ffffff; border-right: 1px solid #f1dfe9; min-height: calc(100vh - 72px); }
+    .list-group-item-custom { background: transparent; border: none; border-radius: 12px; margin-bottom: 6px; padding: 12px 16px; color: #4a4a5a; font-weight: 500; transition: all 0.2s; cursor: pointer; }
+    .list-group-item-custom:hover { background-color: #fbedf4; color: #d16ba5; }
+    .list-group-item-custom.active { background-color: #f3e0ed; color: #c7488c; font-weight: 600; }
+    .nav-link-custom { cursor: pointer; color: #4a4a5a; font-weight: 500; }
+    .nav-link-custom:hover, .nav-link-custom.active-nav { color: #d16ba5 !important; }
+    .badge-notif { background-color: #d16ba5; color: white; border-radius: 30px; font-size: 0.7rem; padding: 4px 8px; }
+    .card { border: 1px solid #ffe0ef; border-radius: 20px; box-shadow: 0 6px 14px rgba(209, 107, 165, 0.05); }
+    .btn-magenta { background-color: #d16ba5; border: none; color: white; }
+    .btn-magenta:hover { background-color: #c15492; }
+    .btn-outline-magenta { border-color: #d16ba5; color: #d16ba5; }
+    .btn-outline-magenta:hover { background-color: #d16ba5; color: white; }
+    .form-control:focus, .form-select:focus { border-color: #d16ba5; box-shadow: 0 0 0 0.2rem rgba(209, 107, 165, 0.25); }
+    .input-group-text { background-color: #fdf4f9; border-color: #f0d4e4; color: #d16ba5; }
+    .avatar-icon { width: 36px; height: 36px; background-color: #f3e0ed; border-radius: 40px; display: inline-flex; align-items: center; justify-content: center; color: #d16ba5; font-weight: bold; }
+    .gajah-icon { font-size: 1.9rem; }
+    .form-range::-webkit-slider-thumb { background: #d16ba5; }
+    .form-range::-webkit-slider-thumb:hover { background: #c15492; }
+    .was-validated .form-control:valid, .form-control.is-valid { border-color: #28a745; background-image: none; }
+    .was-validated .form-control:invalid, .form-control.is-invalid { border-color: #dc3545; }
+    @media (max-width: 768px) { .sidebar { min-height: auto; margin-bottom: 24px; } }
+    .content-panel { transition: 0.2s; }
+  </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg bg-white py-2 sticky-top">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+      <span class="gajah-icon">🐘📚</span>
+      <span class="fw-bold" style="color: #c74f8c;">GajahBelajar</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link nav-link-custom active-nav" data-page="dashboard" style="color:#d16ba5;">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" data-page="kursus">Kursus</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" data-page="siswa">Siswa</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" data-page="laporan">Laporan</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" data-page="pengaturan">Pengaturan</a></li>
+      </ul>
+      <form class="d-flex me-3 my-2 my-lg-0" role="search">
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-end-0"><i class="bi bi-search"></i></span>
+          <input class="form-control border-start-0" type="search" placeholder="Cari kursus, siswa..." id="globalSearch">
+        </div>
+      </form>
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-3 py-1" type="button" data-bs-toggle="dropdown" style="border-color:#f0d4e4;">
+          <div class="avatar-icon"><i class="bi bi-person-fill"></i></div>
+          <span class="d-none d-sm-inline">Admin Magenta</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal"><i class="bi bi-person-circle me-2"></i> Edit Profil</a></li>
+          <li><a class="dropdown-item" href="#" data-page="pengaturan"><i class="bi bi-gear me-2"></i> Pengaturan</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-4 mt-4">
+  <div class="row g-4">
+    <!-- Sidebar -->
+    <div class="col-lg-3 col-md-4">
+      <div class="sidebar p-3 rounded-4">
+        <h6 class="text-secondary mb-3"><i class="bi bi-speedometer2 me-1"></i> Menu Cepat</h6>
+        <div class="list-group">
+          <div class="list-group-item list-group-item-custom d-flex justify-content-between align-items-center" data-side-page="dashboard">
+            <span><i class="bi bi-grid-1x2-fill me-2"></i> Dashboard</span><span class="badge rounded-pill badge-notif">5</span>
+          </div>
+          <div class="list-group-item list-group-item-custom d-flex justify-content-between align-items-center" data-side-page="kursus_aktif">
+            <span><i class="bi bi-book-half me-2"></i> Kursus Aktif</span><span class="badge rounded-pill badge-notif">12</span>
+          </div>
+          <div class="list-group-item list-group-item-custom d-flex justify-content-between align-items-center" data-side-page="tugas">
+            <span><i class="bi bi-journal-check me-2"></i> Tugas</span><span class="badge rounded-pill badge-notif">3</span>
+          </div>
+          <div class="list-group-item list-group-item-custom d-flex justify-content-between align-items-center" data-side-page="diskusi">
+            <span><i class="bi bi-chat-dots me-2"></i> Diskusi</span><span class="badge rounded-pill badge-notif">9+</span>
+          </div>
+          <div class="list-group-item list-group-item-custom d-flex justify-content-between align-items-center" data-side-page="bantuan">
+            <span><i class="bi bi-question-circle me-2"></i> Bantuan</span><span class="badge rounded-pill bg-secondary">baru</span>
+          </div>
+        </div>
+        <hr class="my-4">
+        <div class="dropdown">
+          <button class="btn btn-light w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="dropdown" style="border-radius: 14px;">
+            <span><i class="bi bi-sliders2"></i> Pengaturan Cepat</span><i class="bi bi-chevron-down"></i>
+          </button>
+          <ul class="dropdown-menu p-3" style="min-width: 260px;">
+            <li><div class="mb-2"><label class="form-label small">Mode tampilan</label><select class="form-select form-select-sm" id="quickTheme"><option>Terang</option><option>Gelap (Beta)</option></select></div>
+            <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="notifSwitch"><label class="form-check-label small" for="notifSwitch">Notifikasi realtime</label></div>
+            <button class="btn btn-sm btn-magenta w-100 mt-2" id="quickSaveBtn">Simpan cepat</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <!-- KONTEN DINAMIS -->
+    <div class="col-lg-9 col-md-8">
+      <div id="dynamicContent" class="content-panel"><div class="text-center p-5">Memuat konten...</div></div>
+    </div>
+  </div>
+  <footer class="text-center mt-5 pb-3">© 2025 GajahBelajar — Dashboard Admin dengan 💗 untuk pembelajaran</footer>
+</div>
+
+<!-- Modal Edit Profil -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background:#fef2f8;"><h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Profil Admin</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <form id="editProfilForm" class="needs-validation" novalidate>
+          <div class="mb-3"><label>Nama Lengkap</label><input type="text" class="form-control" value="James Anderson" id="adminName" required><div class="invalid-feedback">Nama wajib diisi</div></div>
+          <div class="mb-3"><label>Email</label><div class="input-group"><span class="input-group-text">@</span><input type="email" class="form-control" value="admin@gajahbelajar.com" id="adminEmail" required></div><div class="invalid-feedback">Email valid diperlukan</div></div>
+          <div class="mb-3"><label>Bio</label><textarea class="form-control" rows="2" id="adminBio">Admin utama platform kursus online</textarea></div>
+          <div class="mb-3"><label>Jenis Kelamin (Radio)</label><div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="genderRadio" value="Laki-laki" checked> <label>Laki-laki</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="genderRadio" value="Perempuan"> <label>Perempuan</label></div></div></div>
+          <div class="mb-3 form-check"><input type="checkbox" class="form-check-input"> Terima notifikasi via email</div>
+          <div class="mb-3"><label>Foto profil (file)</label><input type="file" class="form-control"></div>
+          <div class="text-end"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="submit" class="btn btn-magenta">Simpan Perubahan</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ======================= SEMUA KONTEN HALAMAN LENGKAP DENGAN RADIO, RANGE, VALIDATION =======================
+  const pages = {
+    dashboard: `
+      <div>
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+          <div><h3 class="fw-semibold" style="color:#3e2c36;">Good Morning, James 🌸</h3><p class="text-secondary">8th August, 2025 · Selamat mengawasi ujian</p></div>
+          <div class="dropdown"><button class="btn btn-outline-magenta rounded-pill dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-funnel"></i> Filter Data</button><ul class="dropdown-menu p-2"><li><a class="dropdown-item">Hari ini</a></li><li><a class="dropdown-item">Minggu ini</a></li></ul></div>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6"><div class="card p-3"><div class="d-flex justify-content-between"><span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill"><i class="bi bi-camera-video-fill"></i> Live Now</span></div><h5 class="mt-2 fw-bold">Physics - Class 10 Final Test.</h5><p><i class="bi bi-clock"></i> 08:30 AM - 1:00 PM · 100 Students</p><div class="progress mb-2"><div class="progress-bar" style="width:68%; background:#d16ba5;"></div></div><div class="d-flex justify-content-between small"><span><i class="bi bi-question-circle"></i> Questions</span><span><i class="bi bi-bar-chart"></i> Performance 82%</span></div></div></div>
+          <div class="col-md-6"><div class="card p-3"><div class="d-flex justify-content-between"><span><i class="bi bi-shield-check text-success"></i> <strong>Advance AI</strong> Protecting Enabled</span><span class="badge bg-warning text-dark">Most Disputed</span></div><div class="mt-3"><p><strong>Students Flagged for Cheating</strong> <span class="float-end text-danger">7 ⚠️</span></p><div>Avg. Score: 71% → 73% <i class="bi bi-arrow-up-short text-success"></i></div><div class="mt-2">Total Attendance vs Total Pass: 245 vs 189</div><small class="text-muted">AVG Passing Rate: 69%</small></div></div></div>
+        </div>
+        <div class="row g-3 mb-4"><div class="col-md-5"><div class="card p-3"><div class="d-flex justify-content-between"><h6>Latest Exam Result Overview</h6><span class="text-success fw-semibold">+4.75%</span></div><h2 class="fw-bold" style="color:#d16ba5;">Average CGPA: 4.65</h2></div></div>
+        <div class="col-md-7"><div class="card p-3"><div class="d-flex justify-content-between"><h6>Upcoming Exams</h6><a href="#" class="small text-magenta">See All</a></div><table class="table table-sm"><thead><tr><th>Exam</th><th>Class</th><th>Subject</th><th>Start Time</th><th>Aksi</th></tr></thead><tbody><tr><td>Midterm</td><td>XII IPA</td><td>Chemistry</td><td>10:00 AM</td><td><div class="dropdown"><button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr><tr><td>Final Exam</td><td>X MIPA</td><td>Mathematics</td><td>1:00 PM</td><td><div class="dropdown"><button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr></tbody></table></div></div></div>
+        <!-- FORM TAMBAH KURSUS dengan VALIDATION STATE, RANGE SLIDER, RADIO BUTTON, CHECKBOX, FILE, SELECT, TEXTAREA, INPUT GROUP -->
+        <div class="card p-4 mb-4"><h5><i class="bi bi-plus-circle-fill me-2" style="color:#d16ba5;"></i> Tambah Kursus Baru (Lengkap dengan Validation + Range + Radio)</h5>
+          <form id="tambahKursusFormDashboard" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Nama Kursus *</label><div class="input-group"><span class="input-group-text"><i class="bi bi-journal-bookmark-fill"></i></span><input type="text" class="form-control" id="kursusName" placeholder="Web Development Masterclass" required><div class="invalid-feedback">Nama kursus wajib diisi</div><div class="valid-feedback">Bagus!</div></div></div>
+              <div class="col-md-6"><label class="form-label">Kategori (Select)</label><select class="form-select" id="kategoriSelect" required><option value="">Pilih...</option><option>Programming</option><option>Design</option><option>Data Science</option></select><div class="invalid-feedback">Pilih kategori</div></div>
+              <div class="col-md-6"><label class="form-label">Email Pengajar</label><div class="input-group"><span class="input-group-text"><i class="bi bi-envelope"></i></span><input type="email" class="form-control" id="emailPengajar" placeholder="guru@example.com" required><div class="invalid-feedback">Email valid diperlukan</div></div></div>
+              <div class="col-md-6"><label class="form-label">Durasi (Jam) - Range Slider</label><input type="range" class="form-range" id="durasiRange" min="0" max="40" step="1" value="20"><span id="rangeValueDisplay" class="d-block text-muted">20 jam</span></div>
+              <div class="col-12"><label class="form-label">Deskripsi (Textarea)</label><textarea class="form-control" rows="2" placeholder="Deskripsi kursus..." id="deskripsiKursus" required></textarea><div class="invalid-feedback">Deskripsi harus diisi</div></div>
+              <div class="col-md-6"><label class="form-label">Thumbnail (File)</label><input type="file" class="form-control" id="thumbnailFile"></div>
+              <div class="col-md-6"><label class="form-label">Metode Pembelajaran (Radio Buttons)</label><div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="metodeRadio" value="Online" checked> <label>Online</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="metodeRadio" value="Offline"> <label>Offline (Hybrid)</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="metodeRadio" value="Campuran"> <label>Campuran</label></div></div></div>
+              <div class="col-md-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="publishNowCheck"> <label class="form-check-label">Publikasikan segera</label></div></div>
+              <div class="col-12"><button class="btn btn-magenta" type="submit">Tambahkan Kursus dengan Validasi</button></div>
+            </div>
+          </form>
+        </div>
+        <!-- Tabel Kursus dengan dropdown aksi -->
+        <div class="card p-3"><h5>📋 Daftar Kursus Terbaru</h5><div class="table-responsive"><table class="table table-hover"><thead><tr><th>ID</th><th>Kursus</th><th>Siswa</th><th>Status</th><th>Aksi</th></tr></thead><tbody><tr><td>1</td><td>UI/UX Design</td><td>45</td><td><span class="badge bg-success">Aktif</span></td><td><div class="dropdown"><button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr><tr><td>2</td><td>Python Data Analyst</td><td>78</td><td><span class="badge bg-warning">Berjalan</span></td><td><div class="dropdown"><button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr></tbody></table></div></div>
+      </div>
+      <script>
+        const rangeInput = document.getElementById('durasiRange');
+        if(rangeInput) rangeInput.addEventListener('input', function(){ document.getElementById('rangeValueDisplay').innerText = this.value + ' jam'; });
+        const formDash = document.getElementById('tambahKursusFormDashboard');
+        if(formDash) {
+          formDash.addEventListener('submit', function(e){
+            e.preventDefault();
+            if(!formDash.checkValidity()){ e.stopPropagation(); formDash.classList.add('was-validated'); return; }
+            alert('✅ Kursus berhasil ditambahkan! (Validasi sukses)');
+            formDash.reset(); formDash.classList.remove('was-validated');
+            if(rangeInput) document.getElementById('rangeValueDisplay').innerText = '20 jam';
+          });
+          formDash.classList.add('needs-validation');
+        }
+      <\/script>
+    `,
+    kursus: `<div class="card p-4"><h4><i class="bi bi-book"></i> Manajemen Kursus</h4><p>Daftar kursus dengan dropdown aksi edit/hapus/lihat.</p><div class="table-responsive"><table class="table"><thead><tr><th>Nama</th><th>Kategori</th><th>Siswa</th><th>Aksi</th></tr></thead><tbody><tr><td>UI/UX Design</td><td>Design</td><td>120</td><td><div class="dropdown"><button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr><tr><td>Fullstack JS</td><td>Programming</td><td>85</td><td><div class="dropdown"><button class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown">Aksi</button><ul class="dropdown-menu"><li><a class="dropdown-item">Lihat</a></li><li><a class="dropdown-item">Edit</a></li><li><a class="dropdown-item text-danger">Hapus</a></li></ul></div></td></tr></tbody></table></div><div class="mt-3"><label>Filter Lanjutan (Dropdown Form)</label><div class="dropdown"><button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Filter Kategori</button><ul class="dropdown-menu p-2"><li><div class="form-check"><input class="form-check-input" type="checkbox"> Programming</div></li><li><div class="form-check"><input class="form-check-input" type="checkbox"> Design</div></li><li><button class="btn btn-sm btn-magenta mt-2">Terapkan</button></li></ul></div></div></div>`,
+    siswa: `<div class="card p-4"><h4><i class="bi bi-people"></i> Data Siswa (Radio filter demo)</h4><div class="mb-3"><label>Filter jenis kelamin (Radio):</label><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filterGender" checked> Semua</div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filterGender"> Laki-laki</div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="filterGender"> Perempuan</div></div><ul class="list-group"><li class="list-group-item">James Wilson - Laki-laki</li><li class="list-group-item">Sarah Anindya - Perempuan</li><li class="list-group-item">Rizki Pratama - Laki-laki</li></ul><div class="input-group mt-3"><input type="text" class="form-control" placeholder="Cari siswa..."><button class="btn btn-outline-magenta">Cari</button></div></div>`,
+    laporan: `<div class="card p-4"><h4><i class="bi bi-graph-up"></i> Laporan & Statistik</h4><p>Range slider untuk filter tahun: <input type="range" class="form-range w-50 d-inline mx-2" min="2020" max="2025" value="2025"><span>2025</span></p><div class="alert alert-light">Rata-rata nilai per bulan meningkat 12%.</div><div class="mb-2"><label>Unduh laporan dalam bentuk (Radio):</label><div class="form-check"><input class="form-check-input" type="radio" name="reportType"> PDF</div><div class="form-check"><input class="form-check-input" type="radio" name="reportType"> Excel</div></div><button class="btn btn-magenta">Generate Laporan</button></div>`,
+    pengaturan: `<div class="card p-4"><h4><i class="bi bi-gear"></i> Pengaturan Sistem + Validation</h4><form id="pengaturanForm" class="needs-validation" novalidate><div class="mb-3"><label>Nama Platform</label><input class="form-control" value="GajahBelajar" required><div class="invalid-feedback">Harus diisi</div></div><div class="mb-3"><label>Email Support</label><input type="email" class="form-control" value="admin@gajahbelajar.com" required><div class="invalid-feedback">Email valid</div></div><div class="mb-3"><label>Range batas notifikasi (hari)</label><input type="range" class="form-range" min="1" max="30" value="7"><span class="text-muted">7 hari</span></div><div class="mb-3"><label>Metode Default (Radio):</label><div class="form-check"><input class="form-check-input" type="radio" name="notifMethod" checked> Push</div><div class="form-check"><input class="form-check-input" type="radio" name="notifMethod"> Email</div></div><button class="btn btn-magenta" type="submit">Simpan Pengaturan</button></form><script>document.getElementById('pengaturanForm')?.addEventListener('submit',function(e){ e.preventDefault(); if(this.checkValidity()) alert('Pengaturan tersimpan!'); else this.classList.add('was-validated'); });<\/script></div>`,
+    kursus_aktif: `<div class="card p-4"><h4><i class="bi bi-play-circle-fill"></i> Kursus Aktif</h4><div class="list-group"><div class="list-group-item"><strong>Pemrograman Dasar</strong> - 45 siswa | progres 70% <span class="badge bg-success">Aktif</span></div><div class="list-group-item"><strong>Matematika Lanjut</strong> - 32 siswa | progres 55% <span class="badge bg-success">Aktif</span></div></div><div class="mt-3"><label class="form-label">Range filter kapasitas:</label><input type="range" class="form-range" min="0" max="100" value="50"></div></div>`,
+    tugas: `<div class="card p-4"><h4><i class="bi bi-journal-check"></i> Tugas (Radio Status)</h4><div class="form-check"><input class="form-check-input" type="radio" name="tugasStatus"> Belum dinilai</div><div class="form-check"><input class="form-check-input" type="radio" name="tugasStatus"> Sudah dinilai</div><ul class="list-group mt-2"><li class="list-group-item">Tugas HTML/CSS - 12 submission <button class="btn btn-sm btn-magenta">Periksa</button></li></ul></div>`,
+    diskusi: `<div class="card p-4"><h4><i class="bi bi-chat-dots-fill"></i> Diskusi (Range Thread)</h4><label class="form-label">Tampilkan topik populer: <input type="range" class="form-range w-50" min="0" max="10" value="5"></label><textarea class="form-control mt-2" placeholder="Diskusi baru..."></textarea><button class="btn btn-magenta mt-2">Posting</button></div>`,
+    bantuan: `<div class="card p-4"><h4><i class="bi bi-question-circle-fill"></i> Bantuan + Range Rating Kepuasan</h4><label>Rating kepuasan bantuan (Range):</label><input type="range" class="form-range" min="0" max="100" step="5"><div class="accordion mt-3"><div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#help1">Cara tambah kursus?</button></h2><div id="help1" class="accordion-collapse collapse show"><div class="accordion-body">Klik menu Kursus lalu tekan tombol tambah.</div></div></div></div></div>`
+  };
+
+  function loadPage(pageId) {
+    const container = document.getElementById('dynamicContent');
+    if (pages[pageId]) { container.innerHTML = pages[pageId]; 
+      // reattach range display di dashboard jika ada
+      if(pageId === 'dashboard') {
+        setTimeout(() => {
+          const rng = document.getElementById('durasiRange');
+          if(rng) rng.addEventListener('input', function(){ let disp = document.getElementById('rangeValueDisplay'); if(disp) disp.innerText = this.value + ' jam'; });
+          const frm = document.getElementById('tambahKursusFormDashboard');
+          if(frm && !frm.hasAttribute('data-listener')) { frm.setAttribute('data-listener','true');
+            frm.addEventListener('submit', function(e){ e.preventDefault(); if(!frm.checkValidity()){ frm.classList.add('was-validated'); return; } alert('✅ Kursus berhasil ditambahkan!'); frm.reset(); frm.classList.remove('was-validated'); if(rng) document.getElementById('rangeValueDisplay').innerText = '20 jam'; });
+          }
+        }, 50);
+      }
+    } else { container.innerHTML = `<div class="alert alert-warning">Konten tidak ditemukan</div>`; }
+    document.querySelectorAll('.nav-link-custom').forEach(l=>l.classList.remove('active-nav'));
+    document.querySelectorAll('.list-group-item-custom').forEach(i=>i.classList.remove('active'));
+    if(document.querySelector(`.nav-link-custom[data-page="${pageId}"]`)) document.querySelector(`.nav-link-custom[data-page="${pageId}"]`).classList.add('active-nav');
+    document.querySelectorAll('.list-group-item-custom').forEach(el=>{ if(el.getAttribute('data-side-page')===pageId) el.classList.add('active'); });
+  }
+  document.querySelectorAll('.nav-link-custom').forEach(link=>link.addEventListener('click',(e)=>{ e.preventDefault(); loadPage(link.getAttribute('data-page')); }));
+  document.querySelectorAll('.list-group-item-custom').forEach(item=>item.addEventListener('click',()=>{ loadPage(item.getAttribute('data-side-page')); }));
+  document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',(e)=>{ let p=el.getAttribute('data-page'); if(pages[p]){ e.preventDefault(); loadPage(p); } }));
+  
+  // Edit profil validation
+  const editModalForm = document.getElementById('editProfilForm');
+  if(editModalForm) editModalForm.addEventListener('submit',(ev)=>{ ev.preventDefault(); if(editModalForm.checkValidity()){ alert('Profil berhasil diperbarui!'); bootstrap.Modal.getInstance(document.getElementById('editProfileModal'))?.hide(); } else editModalForm.classList.add('was-validated'); });
+  document.getElementById('quickSaveBtn')?.addEventListener('click',()=>alert('Pengaturan cepat disimpan'));
+  document.getElementById('globalSearch')?.addEventListener('keyup',(e)=>{ if(e.key==='Enter') alert(`Pencarian: "${e.target.value}" (demo)`); });
+  loadPage('dashboard');
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
